@@ -14,11 +14,12 @@ class person
         vel = v;
     }
 };
-std::vector<person> allPeople;
+person ch(0,0,1);
+std::vector<person> allEnemies;
 void createEnemy (int n){
     for (int i=0; i<n; i++){
         person e(5,5,1);
-        allPeople.push_back(e);
+        allEnemies.push_back(e);
     }
 }
 // Initialization function
@@ -46,49 +47,51 @@ void keyboard(unsigned char key, int x, int y)
     switch (key)
     {
     case 119 :
-        allPeople[0].pos[1] ++;
+        ch.pos[1] ++;
         break;
     case 97 :
-        allPeople[0].pos[0] --;
+        ch.pos[0] --;
         break;
     case 115 :
-        allPeople[0].pos[1] --;
+        ch.pos[1] --;
         break;
     case 100 :
-        allPeople[0].pos[0] ++;
+        ch.pos[0] ++;
         break;
     default:
         break;
     }
     glutPostRedisplay();
 }
-  
+
 void myDisplay(void)
-{
-    int k;
-    for (k = 0; k <= 400; k += 5)
-    {    
-        glClear(GL_COLOR_BUFFER_BIT);
-        for(int i=0; i<allPeople.size(); i++)
-        {
-            person c = allPeople.at(i);
-            glBegin(GL_LINE_LOOP);
-                glVertex2i(c.pos[0],c.pos[1]);
-                glVertex2i(c.pos[0] , c.pos[1] + 10);
-                glVertex2i(c.pos[0] + 10, c.pos[1]+10);
-                glVertex2i(c.pos[0] + 10, c.pos[1]);
-            glEnd();
+{  
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBegin(GL_LINE_LOOP);
+        glVertex2i(ch.pos[0],ch.pos[1]);
+        glVertex2i(ch.pos[0] , ch.pos[1] + 5);
+        glVertex2i(ch.pos[0] + 5, ch.pos[1]+5);
+        glVertex2i(ch.pos[0] + 5, ch.pos[1]);
+    glEnd();
+    for(int i=0; i<allEnemies.size(); i++)
+    {
+        person c = allEnemies.at(i);
+        glBegin(GL_LINE_LOOP);
+            glVertex2i(c.pos[0],c.pos[1]);
+            glVertex2i(c.pos[0] , c.pos[1] + 10);
+            glVertex2i(c.pos[0] + 10, c.pos[1]+10);
+            glVertex2i(c.pos[0] + 10, c.pos[1]);
+        glEnd();
   
-        }
-        glutSwapBuffers();
     }
+    glutSwapBuffers();
 }
-  
-  
+
 // Driver Program
 int main (int argc, char** argv)
 {
-    createEnemy(1);
+    
     glutInit(&argc, argv);
       
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
