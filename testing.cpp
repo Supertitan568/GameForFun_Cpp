@@ -1,7 +1,8 @@
 #include<iostream>
-#include<GL/glut.h>
+#include<GL/freeglut.h>
 #include<vector>
 #include<math.h>
+#include<cstdlib>
 class person 
 {
     public:
@@ -12,16 +13,18 @@ class person
         pos[0] = x;
         pos[1] = y;
         vel = v;
+        std::cout << "Enemy Created" << std::endl;
     }
 };
-person ch(0,0,1);
-std::vector<person> allEnemies;
+person ch(0,0,4);
+std::vector<person> allEnemies {person(10,10,2)};
 void createEnemy (int n){
     for (int i=0; i<n; i++){
-        person e(5,5,1);
+        person e(-10 , -10 ,2);
         allEnemies.push_back(e);
     }
 }
+
 // Initialization function
 void startInit (void)
 {
@@ -47,26 +50,25 @@ void keyboard(unsigned char key, int x, int y)
     switch (key)
     {
     case 119 :
-        ch.pos[1] ++;
+        ch.pos[1] += ch.vel;
         break;
     case 97 :
-        ch.pos[0] --;
+        ch.pos[0] -= ch.vel;
         break;
     case 115 :
-        ch.pos[1] --;
+        ch.pos[1] -= ch.vel;
         break;
     case 100 :
-        ch.pos[0] ++;
+        ch.pos[0] += ch.vel;
         break;
     default:
         break;
     }
-    glutPostRedisplay();
 }
 
-void myDisplay(void)
+void drawDisplay(void)
 {  
-
+    
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_LINE_LOOP);
         glVertex2i(ch.pos[0],ch.pos[1]);
@@ -83,15 +85,14 @@ void myDisplay(void)
             glVertex2i(c.pos[0] + 10, c.pos[1]+10);
             glVertex2i(c.pos[0] + 10, c.pos[1]);
         glEnd();
-  
     }
     glutSwapBuffers();
+    glutPostRedisplay();
 }
 
 // Driver Program
 int main (int argc, char** argv)
 {
-    
     glutInit(&argc, argv);
       
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
@@ -109,6 +110,6 @@ int main (int argc, char** argv)
     glutKeyboardFunc(keyboard);
     // Call to myInit()
     startInit();
-    glutDisplayFunc(myDisplay);
+    glutDisplayFunc(drawDisplay);
     glutMainLoop();
 }
