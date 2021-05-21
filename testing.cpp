@@ -3,6 +3,7 @@
 #include<vector>
 #include<math.h>
 #include<cstdlib>
+#include<thread>
 class person 
 {
     public:
@@ -16,15 +17,65 @@ class person
         std::cout << "Enemy Created" << std::endl;
     }
 };
+bool gameOver = false;
+unsigned char k;
 person ch(0,0,4);
-std::vector<person> allEnemies {person(10,10,2)};
-void createEnemy (int n){
-    for (int i=0; i<n; i++){
-        person e(-10 , -10 ,2);
+std::vector<person> allEnemies {person(10,10,1)};
+void createEnemy (int n)
+{
+    for (int i=0; i<n; i++)
+    {
+        person e(-10 , -10 ,1);
         allEnemies.push_back(e);
     }
 }
-
+void logic ()
+{
+    while (gameOver != true)
+    {
+        for(int i=0; i<allEnemies.size(); i++)
+        {
+            if (ch.pos[0] > allEnemies.at(i).pos[0])
+            {
+                allEnemies.at(i).pos[0] += allEnemies.at(i).vel;
+            }
+            else if (ch.pos[1] > allEnemies.at(i).pos[1])
+            {
+                allEnemies.at(i).pos[1] += allEnemies.at(i).vel;
+            }
+            else if (ch.pos[0] < allEnemies.at(i).pos[0])
+            {
+                allEnemies.at(i).pos[0] -= allEnemies.at(i).vel;
+            }
+            else if (ch.pos[1] < allEnemies.at(i).pos[1])
+            {
+                allEnemies.at(i).pos[1] -= allEnemies.at(i).vel;
+            }
+        }
+        switch (k)
+        {
+        case 119 :
+            ch.pos[1] += ch.vel;
+            k = 0;
+            break;
+        case 97 :
+            ch.pos[0] -= ch.vel;
+            k = 0;
+            break;
+        case 115 :
+            ch.pos[1] -= ch.vel;
+            k = 0;
+            break;
+        case 100 :
+            ch.pos[0] += ch.vel;
+            k = 0;
+            break;
+        default:
+            break;
+        }
+        system("sleep .05");
+    }
+}
 // Initialization function
 void startInit (void)
 {
@@ -47,28 +98,11 @@ void startInit (void)
 // keyboard function : it gets activated when a button is pressed
 void keyboard(unsigned char key, int x, int y)
 {
-    switch (key)
-    {
-    case 119 :
-        ch.pos[1] += ch.vel;
-        break;
-    case 97 :
-        ch.pos[0] -= ch.vel;
-        break;
-    case 115 :
-        ch.pos[1] -= ch.vel;
-        break;
-    case 100 :
-        ch.pos[0] += ch.vel;
-        break;
-    default:
-        break;
-    }
+    k = key;
 }
 
 void drawDisplay(void)
 {  
-    
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_LINE_LOOP);
         glVertex2i(ch.pos[0],ch.pos[1]);
@@ -93,6 +127,7 @@ void drawDisplay(void)
 // Driver Program
 int main (int argc, char** argv)
 {
+    std::thread logicThread(logic);
     glutInit(&argc, argv);
       
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
@@ -112,4 +147,5 @@ int main (int argc, char** argv)
     startInit();
     glutDisplayFunc(drawDisplay);
     glutMainLoop();
+    logicThread.join();
 }
