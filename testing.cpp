@@ -19,7 +19,7 @@ class thing
 bool gameOver = false;
 unsigned char k;
 thing ch(0,0,4);
-std::vector<thing> allEnemies {thing(10,10,1)};
+std::vector<thing> allEnemies {thing(100,100,1), thing(-100,-100, 1)};
 std::vector<thing> allItems {thing(80,80,0)};
 void createEnemy (int n)
 {
@@ -31,6 +31,7 @@ void createEnemy (int n)
 }
 void logic ()
 {
+    bool powerup = false;
     while (gameOver != true)
     {
         for(int i=0; i<allEnemies.size(); i++)
@@ -52,11 +53,22 @@ void logic ()
                 allEnemies.at(i).pos[1] -= allEnemies.at(i).vel;
             }
         }
-        for (int i=0; i<allEnemies.size(); i++)
+        for (int i=0; i < allEnemies.size(); i++)
         {
             if((abs(allEnemies[i].pos[0] - ch.pos[0]) < 5) && (abs(allEnemies[i].pos[1] - ch.pos[1]) < 5))
             {
                 std::cout << "You got hit by an Enemy" << std::endl;
+                
+                if (powerup == false)
+                {
+                    gameOver = false; // will make this true when I find a different way to join the logic thread 
+                }
+    
+                else if (powerup == true)
+                {
+                    allEnemies.erase(allEnemies.begin() + i);
+                    createEnemy(2);
+                }
             }
         }
         for (int i=0; i<allItems.size(); i++)
@@ -64,6 +76,7 @@ void logic ()
             if((abs(allItems[i].pos[0] - ch.pos[0]) < 5) && (abs(allItems[i].pos[1] - ch.pos[1]) < 5))
             {
                 std::cout << "You got an item" << std::endl;
+                powerup = true;
             }
         }
         switch (k)
@@ -172,4 +185,5 @@ int main (int argc, char** argv)
     glutDisplayFunc(drawDisplay);
     glutMainLoop();
     logicThread.join();
+    return 0;
 }
