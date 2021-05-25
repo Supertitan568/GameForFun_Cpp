@@ -25,7 +25,7 @@ void createEnemy (int n)
 {
     for (int i=0; i<n; i++)
     {
-        thing e(-10 , -10 ,1);
+        thing e(rand() % 550 -550, rand() % 300 - 300 ,1);
         allEnemies.push_back(e);
     }
 }
@@ -63,7 +63,6 @@ void logic ()
                 {
                     gameOver = false; // will make this true when I find a different way to join the logic thread 
                 }
-    
                 else if (powerup == true)
                 {
                     allEnemies.erase(allEnemies.begin() + i);
