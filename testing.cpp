@@ -17,6 +17,7 @@ class thing
     }
 };
 bool gameOver = false;
+bool powerup = false;
 unsigned char k;
 thing ch(0,0,4);
 std::vector<thing> allEnemies {thing(100,100,1), thing(-100,-100, 1)};
@@ -31,7 +32,13 @@ void createEnemy (int n)
 }
 void logic ()
 {
-    bool powerup = false;
+    auto pFunc = []()
+    {
+        powerup = true;
+        std::cout << powerup << std::endl;
+        system("sleep 10");
+        powerup = false;
+    };
     while (gameOver != true)
     {
         for(int i=0; i<allEnemies.size(); i++)
@@ -75,7 +82,7 @@ void logic ()
             if((abs(allItems[i].pos[0] - ch.pos[0]) < 5) && (abs(allItems[i].pos[1] - ch.pos[1]) < 5))
             {
                 std::cout << "You got an item" << std::endl;
-                powerup = true;
+                std::thread (pFunc).detach();
             }
         }
         switch (k)
@@ -163,7 +170,7 @@ void drawDisplay(void)
 // Driver Program
 int main (int argc, char** argv)
 {
-    std::thread logicThread(logic);
+    std::thread (logic).detach();
     glutInit(&argc, argv);
       
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
@@ -183,6 +190,5 @@ int main (int argc, char** argv)
     startInit();
     glutDisplayFunc(drawDisplay);
     glutMainLoop();
-    logicThread.join();
     return 0;
 }
