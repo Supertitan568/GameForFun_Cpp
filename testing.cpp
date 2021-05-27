@@ -26,8 +26,16 @@ void createEnemy (int n)
 {
     for (int i=0; i<n; i++)
     {
-        thing e(rand() % 550 -550, rand() % 300 - 300 ,1);
-        allEnemies.push_back(e);
+        thing c(rand() % 550 -550, rand() % 300 - 300 ,1);
+        allEnemies.push_back(c);
+    }
+}
+void createItem (int n)
+{
+    for (int i=0; i<n; i++)
+    {
+        thing c(rand() % 550 -550, rand() % 300 - 300 ,1);
+        allItems.push_back(c);
     }
 }
 void logic ()
@@ -82,6 +90,8 @@ void logic ()
             if((abs(allItems[i].pos[0] - ch.pos[0]) < 5) && (abs(allItems[i].pos[1] - ch.pos[1]) < 5))
             {
                 std::cout << "You got an item" << std::endl;
+                allItems.erase(allItems.begin() + i);
+                createItem(2);
                 std::thread (pFunc).detach();
             }
         }
